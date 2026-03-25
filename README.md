@@ -1,98 +1,162 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📊 Forex News Telegram Bot (Backend System)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Backend-driven Telegram bot that delivers **personalized economic news alerts** based on user preferences.
 
-## Description
+The system fetches external economic events, processes and filters them, and sends:
+- daily summaries
+- real-time reminders before events
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Designed as a **scalable notification system**, not just a simple bot.
 
-## Project setup
+---
+
+## Problem
+
+Traders and users:
+- get overloaded with irrelevant news
+- miss important economic events
+- don’t have personalized filtering
+- don’t receive timely reminders
+
+---
+
+## Solution
+
+A backend system that:
+- syncs economic events from external sources
+- filters them per user preferences
+- sends structured daily reports
+- notifies users before important events
+
+---
+
+## Core Features
+
+### 🔹 Personalized Filtering
+- currencies selection (USD, EUR, etc.)
+- impact level filtering (low / medium / high)
+- include / exclude keywords
+- timezone support
+
+### 🔹 Scheduled Notifications
+- daily summary at user-defined time
+- reminders X minutes before event
+- cron-based scheduling system
+
+### 🔹 Data Sync System
+- periodic sync from external API
+- idempotent updates
+- sync state tracking
+
+### 🔹 Notification Tracking
+- logs of sent notifications
+- prevention of duplicates
+- delivery control
+
+---
+
+## Architecture
+
+### Stack
+- NestJS (modular architecture)
+- Prisma + PostgreSQL
+- Telegram Bot API
+- Scheduler (cron jobs)
+
+### Key Modules
+- **Sync Service** → fetch & normalize external data  
+- **Scheduler Service** → handles daily reports & reminders  
+- **User Preferences** → filtering logic  
+- **Notification Service** → message delivery + logging  
+
+---
+
+## Data Flow
+
+1. Fetch economic events from external source  
+2. Normalize & store in database  
+3. Apply user filters (currency, impact, keywords)  
+4. Schedule notifications  
+5. Send Telegram messages  
+6. Log delivery state  
+
+---
+
+## Example Use Case
+
+**User sets:**
+- currencies: USD, EUR  
+- impact: high  
+- report time: 08:00  
+
+**System:**
+- sends daily summary at 08:00  
+- sends reminders 15 minutes before each relevant event  
+
+---
+
+## Technical Highlights
+
+- Modular NestJS architecture  
+- Idempotent sync logic  
+- User-level personalization  
+- Scheduled job system  
+- Structured database design (events, users, preferences, logs)  
+
+---
+
+## Limitations
+
+- No queue system (jobs handled via scheduler)  
+- In-memory state for some interactions  
+- No admin panel / REST API  
+- No retry/backoff strategy  
+
+---
+
+## Future Improvements
+
+- Queue system (BullMQ) for scalable jobs  
+- Retry & failure handling  
+- Admin dashboard / API  
+- Multi-source data ingestion  
+- Analytics (usage, engagement)  
+
+---
+
+## Positioning
+
+This project demonstrates:
+- backend system design  
+- scheduled processing  
+- external API integration  
+- user-specific data filtering  
+- notification pipelines  
+
+---
+
+## Tech Stack
+
+- Node.js / TypeScript  
+- NestJS  
+- Prisma ORM  
+- PostgreSQL  
+- Telegram Bot API  
+
+---
+
+## How to Run
 
 ```bash
-$ npm install
-```
+git clone <repo>
+cd project
 
-## Compile and run the project
+npm install
 
-```bash
-# development
-$ npm run start
+# setup env
+cp .env.example .env
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# run
+npm run start:dev
