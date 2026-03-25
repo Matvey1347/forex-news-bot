@@ -38,7 +38,9 @@ export class TelegramUpdate {
       return;
     }
 
-    const text = await this.notificationService.sendDailyReportNow(String(telegramId));
+    const text = await this.notificationService.sendDailyReportNow(
+      String(telegramId),
+    );
     await ctx.reply(text, this.mainMenu());
   }
 
@@ -59,38 +61,55 @@ export class TelegramUpdate {
       return;
     }
 
-    const text = await this.notificationService.getCurrentSettings(String(telegramId));
+    const text = await this.notificationService.getCurrentSettings(
+      String(telegramId),
+    );
     await ctx.reply(text, this.settingsMenu());
   }
 
   @Hears(MENU.SETTINGS_REPORT_TIME)
   async onReportTime(@Ctx() ctx: TelegramContext) {
     await this.setPending(ctx, 'report_time');
-    await ctx.reply('Send report time in HH:mm format (e.g. 08:00).', this.settingsMenu());
+    await ctx.reply(
+      'Send report time in HH:mm format (e.g. 08:00).',
+      this.settingsMenu(),
+    );
   }
 
   @Hears(MENU.SETTINGS_CURRENCIES)
   async onCurrencies(@Ctx() ctx: TelegramContext) {
     await this.setPending(ctx, 'currencies');
-    await ctx.reply('Send currencies as comma separated list (e.g. USD,EUR,GBP).', this.settingsMenu());
+    await ctx.reply(
+      'Send currencies as comma separated list (e.g. USD,EUR,GBP).',
+      this.settingsMenu(),
+    );
   }
 
   @Hears(MENU.SETTINGS_IMPACTS)
   async onImpacts(@Ctx() ctx: TelegramContext) {
     await this.setPending(ctx, 'impacts');
-    await ctx.reply('Send impact priorities as comma separated list (e.g. high,medium).', this.settingsMenu());
+    await ctx.reply(
+      'Send impact priorities as comma separated list (e.g. high,medium).',
+      this.settingsMenu(),
+    );
   }
 
   @Hears(MENU.SETTINGS_INCLUDE)
   async onIncludeKeywords(@Ctx() ctx: TelegramContext) {
     await this.setPending(ctx, 'include_keywords');
-    await ctx.reply('Send include keywords as comma separated list.', this.settingsMenu());
+    await ctx.reply(
+      'Send include keywords as comma separated list.',
+      this.settingsMenu(),
+    );
   }
 
   @Hears(MENU.SETTINGS_EXCLUDE)
   async onExcludeKeywords(@Ctx() ctx: TelegramContext) {
     await this.setPending(ctx, 'exclude_keywords');
-    await ctx.reply('Send exclude keywords as comma separated list.', this.settingsMenu());
+    await ctx.reply(
+      'Send exclude keywords as comma separated list.',
+      this.settingsMenu(),
+    );
   }
 
   @Hears(/^[\s\S]+$/)
@@ -107,10 +126,8 @@ export class TelegramUpdate {
     }
 
     try {
-      const normalized = await this.notificationService.validateAndNormalizeInput(
-        pending,
-        text,
-      );
+      const normalized =
+        await this.notificationService.validateAndNormalizeInput(pending, text);
       await this.notificationService.updatePreference(String(telegramId), {
         [normalized.field]: normalized.value,
       });
@@ -131,19 +148,16 @@ export class TelegramUpdate {
   }
 
   private mainMenu() {
-    return Markup.keyboard([[MENU.MAIN_REPORTS], [MENU.MAIN_SETTINGS]])
+    return Markup.keyboard([[MENU.MAIN_REPORTS, MENU.MAIN_SETTINGS]])
       .resize()
       .persistent();
   }
 
   private settingsMenu() {
     return Markup.keyboard([
-      [MENU.SETTINGS_REPORT_TIME],
-      [MENU.SETTINGS_CURRENCIES],
-      [MENU.SETTINGS_IMPACTS],
-      [MENU.SETTINGS_INCLUDE],
-      [MENU.SETTINGS_EXCLUDE],
-      [MENU.SETTINGS_SHOW],
+      [MENU.SETTINGS_REPORT_TIME, MENU.SETTINGS_CURRENCIES],
+      [MENU.SETTINGS_IMPACTS, MENU.SETTINGS_INCLUDE],
+      [MENU.SETTINGS_EXCLUDE, MENU.SETTINGS_SHOW],
       [MENU.SETTINGS_BACK],
     ])
       .resize()
