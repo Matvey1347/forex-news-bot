@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String          @id @default(cuid())
+  telegramId  String          @unique
+  username    String?
+  firstName   String?
+  lastName    String?
+  isActive    Boolean         @default(true)
+  preferences UserPreference?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  notificationLogs NotificationLog[]
+}
+
+model UserPreference {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  timezone              String   @default("Europe/Warsaw")
+  dailyReportTime       String   @default("08:00")
+  reminderMinutesBefore Int      @default(15)
+  currencies            String[]
+  impacts               String[]
+  includeKeywords       String[]
+  excludeKeywords       String[]
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EconomicEvent {
+  id              String   @id @default(cuid())
+  externalId      String   @unique
+  source          String
+  title           String
+  country         String
+  impact          String
+  eventDateUtc    DateTime
+  eventDateSource String
+  forecast        String?
+  previous        String?
+  weekKey         String
+  rawPayload      Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  notificationLogs NotificationLog[]
+}
+
+model NotificationLog {
+  id           String    @id @default(cuid())
+  userId       String
+  eventId      String?
+  type         NotificationType
+  scheduledFor DateTime
+  sentAt       DateTime?
+  status       NotificationStatus
+  error        String?
+  createdAt    DateTime  @default(now())
+
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event EconomicEvent? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+  @@index([eventId])
+}
+
+model SyncState {
+  id        String      @id @default(cuid())
+  source    String
+  weekKey   String
+  fetchedAt DateTime
+  status    SyncStatus
+  details   Json?
+  createdAt DateTime    @default(now())
+
+  @@unique([source, weekKey])
+}
+
+enum NotificationType {
+  DAILY_REPORT
+  EVENT_REMINDER
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum SyncStatus {
+  SUCCESS
+  FAILED
+}
